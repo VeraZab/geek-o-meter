@@ -1,3 +1,5 @@
+// var API = require('./API_response');
+// console.log(API);
 
 function createCORSRequest(method, url) {
   var xhr = new XMLHttpRequest();
@@ -12,26 +14,19 @@ function createCORSRequest(method, url) {
   return xhr;
 }
 
-function makeCorsRequest() {
-  var url = 'https://api.github.com/search/users?q=verazab+location:montreal';
+function search(city){
+  var city = city;
+  var url="https://api.github.com/search/users?q=location:"+city;
   var xhr = createCORSRequest('GET', url);
-  if (!xhr) {
-    alert('CORS not supported');
-    return;
-  }
-
-  xhr.onload = function() {
+  xhr.onload = function(){
     var text = xhr.responseText;
-    console.log('Response from CORS request to ' + url + ': ' + text);
-  };
-
-  xhr.onerror = function() {
-    alert('Woops, there was an error making the request.');
-  };
-
+    console.log(text);
+  }
   xhr.send();
 }
 
-makeCorsRequest();
+
+
+
 
 

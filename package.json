@@ -1,0 +1,24 @@
+{
+  "name": "ajax",
+  "version": "1.0.0",
+  "description": "",
+  "main": "ajax.js",
+  "scripts": {
+    "start": "watchify ajax.js -o bundle.js",
+    "bundle": " browserify ajax.js -o bundle.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VeraZab/github-api-ajax.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VeraZab/github-api-ajax/issues"
+  },
+  "homepage": "https://github.com/VeraZab/github-api-ajax#readme",
+  "dependencies": {
+    "browserify": "^13.0.0",
+    "watchify": "^3.7.0"
+  }
+}
