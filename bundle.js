@@ -1,10 +1,21 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var plot = require('./plotly');
-var data = [{ values: [19, 26, 55], labels: ['Montreal', 'Toronto', 'Ottawa'], type: 'pie' }];
+var data = [{ values: [], labels: [], type: 'pie' }];
 var layout = { height: 400, width: 500 };
 
-window.hello = function (){
-// 'https://api.github.com/search/users?q=location:"'+input+'"+type:user'
+
+window.hello = function (input){
+data[0].labels.push(input);
+
+var url='https://api.github.com/search/users?q=type:user+location:"'+input+'"';
+var xhr = new XMLHttpRequest();
+xhr.open('GET', url);
+xhr.onload = function(){
+	var text = JSON.parse(xhr.responseText);
+	data[0].values.push(text.total_count);
+}
+xhr.send();
+
 plot.newPlot('result', data, layout);
 }
 },{"./plotly":2}],2:[function(require,module,exports){
