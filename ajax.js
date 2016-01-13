@@ -1,13 +1,8 @@
-var API = require('./API_response');
+var plot = require('./plotly');
+var data = [{ values: [19, 26, 55], labels: ['Montreal', 'Toronto', 'Ottawa'], type: 'pie' }];
+var layout = { height: 400, width: 500 };
 
 window.hello = function (){
-  for(var x = 0; x<API.items.length; x++){
-    console.log(API.items[x].url);  
-  }
+// 'https://api.github.com/search/users?q=location:"'+input+'"+type:user'
+plot.newPlot('result', data, layout);
 }
-
-
-
-
-
-
