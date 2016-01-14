@@ -61,7 +61,6 @@ var InputField = React.createClass({
      <button onClick={function(){
         store.dispatch(search(this.input.value));
         input.value = '';
-        console.log(store.getState());
       }}></button>
      </div>
    );
@@ -85,7 +84,6 @@ var PlotlyComponent = React.createClass({
       };
 
       Plotly.newPlot('chart', data, layout);  
-      console.log(data);
     },
 
   	render: function(){  	
