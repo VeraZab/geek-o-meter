@@ -7,19 +7,44 @@ var React = require('react');
 
 
 //actions
+function search(city){
+  return {
+    type: 'search',
+    city: city
+  }
+}
 
 //reducers
 var initialState = {
-  val:[1],
-  lab:[1],
-  t:'pie',
-  h: 400,
-  w: 400
+  val:[],
+  lab:[],
 }
 
-//store
+function reducer(state, action){
+  if(state === undefined){
+    return initialState
+  } else if(action.type === 'search'){
+    var newCity = [action.city];
+    var coders = [1];
+    return {
+      val: state.val.concat(coders),
+      lab: state.lab.concat(newCity)
+    }
+  }
+  return state
+}
 
 //components
+var Application = React.createClass({displayName: "Application",
+  render: function(){
+    return(
+      React.createElement("div", null, 
+        React.createElement(Search, null), 
+        React.createElement(PlotlyComponent, {store: this.props.store})
+      )
+    );
+  }
+})
 
 var Search = React.createClass({displayName: "Search",
  render: function(){
@@ -33,46 +58,53 @@ var InputField = React.createClass({displayName: "InputField",
  render: function(){
    return(
      React.createElement("div", null, 
-     React.createElement("input", null), 
-     React.createElement("button", null)
+     React.createElement("input", {ref: function(node){this.input = node;}}), 
+     React.createElement("button", {onClick: function(){
+        store.dispatch(search(this.input.value));
+        input.value = '';
+        console.log(store.getState());
+      }})
      )
    );
  }
 });
 
 var PlotlyComponent = React.createClass({displayName: "PlotlyComponent",
-	  componentDidMount: function() {
+    shouldComponentUpdate: function() {
+      return true;
+    },
+
+    componentDidUpdate: function() {
       var data = [{
-        values: initialState.val, 
-        labels: initialState.lab,
-        type: initialState.t}];
+      values: this.props.store.val, 
+      labels: this.props.store.lab,
+      type: 'pie'}];
 
       var layout = {
-        height: initialState.h,
-        width: initialState.w
+      height: 400,
+      width: 400
       };
 
-    	Plotly.plot('chart', data, layout);
-  	},
-
-  	shouldComponentUpdate: function() {
-    return true;
-  	},
+      Plotly.newPlot('chart', data, layout);  
+      console.log(data);
+    },
 
   	render: function(){  	
 		return React.createElement("div", null);
   	}
 });
 
-ReactDOM.render(
-	React.createElement(Search, null),
-	document.getElementById('search')
-);
 
-ReactDOM.render(
-  React.createElement(PlotlyComponent, null),
-  document.getElementById('chart')
-);
+//store
+var store = Redux.createStore(reducer);
+var render = function(){
+  ReactDOM.render(
+  React.createElement(Application, {store: store.getState()}),
+  document.getElementById('search')
+  );
+}
+store.subscribe(render);
+render();
 
 },{"./plotly":169,"react":159,"react-dom":30,"redux":161}],2:[function(require,module,exports){
 (function (process){
