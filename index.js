@@ -1,8 +1,8 @@
 var Plotly = require('./plotly');
-var Redux = require('redux');
 var ReactDOM = require('react-dom');
 var React = require('react');
-
+var Thunk = require('redux-thunk');
+var Redux = require('redux');
 
 
 //actions
@@ -93,7 +93,9 @@ var PlotlyComponent = React.createClass({
 
 
 //store
-var store = Redux.createStore(reducer);
+var createStoreWithMiddleware = Redux.applyMiddleware(Thunk)(Redux.createStore);
+var store = createStoreWithMiddleware(reducer);
+
 var render = function(){
   ReactDOM.render(
   <Application store = {store.getState()}/>,

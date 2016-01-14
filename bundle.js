@@ -1,9 +1,9 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var Plotly = require('./plotly');
-var Redux = require('redux');
 var ReactDOM = require('react-dom');
 var React = require('react');
-
+var Thunk = require('redux-thunk');
+var Redux = require('redux');
 
 
 //actions
@@ -85,9 +85,6 @@ var PlotlyComponent = React.createClass({displayName: "PlotlyComponent",
       };
 
       Plotly.newPlot('chart', data, layout);  
-      console.log(typeof data);
-      console.log(data);
-      console.log(data[0]);
     },
 
   	render: function(){  	
@@ -97,7 +94,9 @@ var PlotlyComponent = React.createClass({displayName: "PlotlyComponent",
 
 
 //store
-var store = Redux.createStore(reducer);
+var createStoreWithMiddleware = Redux.applyMiddleware(Thunk)(Redux.createStore);
+var store = createStoreWithMiddleware(reducer);
+
 var render = function(){
   ReactDOM.render(
   React.createElement(Application, {store: store.getState()}),
@@ -107,7 +106,7 @@ var render = function(){
 store.subscribe(render);
 render();
 
-},{"./plotly":169,"react":159,"react-dom":30,"redux":161}],2:[function(require,module,exports){
+},{"./plotly":170,"react":159,"react-dom":30,"redux":162,"redux-thunk":160}],2:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -19136,6 +19135,21 @@ module.exports = require('./lib/React');
 },{"./lib/React":54}],160:[function(require,module,exports){
 'use strict';
 
+function thunkMiddleware(_ref) {
+  var dispatch = _ref.dispatch;
+  var getState = _ref.getState;
+
+  return function (next) {
+    return function (action) {
+      return typeof action === 'function' ? action(dispatch, getState) : next(action);
+    };
+  };
+}
+
+module.exports = thunkMiddleware;
+},{}],161:[function(require,module,exports){
+'use strict';
+
 exports.__esModule = true;
 exports['default'] = createStore;
 
@@ -19297,7 +19311,7 @@ function createStore(reducer, initialState) {
     replaceReducer: replaceReducer
   };
 }
-},{"./utils/isPlainObject":166}],161:[function(require,module,exports){
+},{"./utils/isPlainObject":167}],162:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -19329,7 +19343,7 @@ exports.combineReducers = _utilsCombineReducers2['default'];
 exports.bindActionCreators = _utilsBindActionCreators2['default'];
 exports.applyMiddleware = _utilsApplyMiddleware2['default'];
 exports.compose = _utilsCompose2['default'];
-},{"./createStore":160,"./utils/applyMiddleware":162,"./utils/bindActionCreators":163,"./utils/combineReducers":164,"./utils/compose":165}],162:[function(require,module,exports){
+},{"./createStore":161,"./utils/applyMiddleware":163,"./utils/bindActionCreators":164,"./utils/combineReducers":165,"./utils/compose":166}],163:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -19391,7 +19405,7 @@ function applyMiddleware() {
 }
 
 module.exports = exports['default'];
-},{"./compose":165}],163:[function(require,module,exports){
+},{"./compose":166}],164:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -19446,7 +19460,7 @@ function bindActionCreators(actionCreators, dispatch) {
 }
 
 module.exports = exports['default'];
-},{"./mapValues":167}],164:[function(require,module,exports){
+},{"./mapValues":168}],165:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -19580,7 +19594,7 @@ function combineReducers(reducers) {
 
 module.exports = exports['default'];
 }).call(this,require('_process'))
-},{"../createStore":160,"./isPlainObject":166,"./mapValues":167,"./pick":168,"_process":29}],165:[function(require,module,exports){
+},{"../createStore":161,"./isPlainObject":167,"./mapValues":168,"./pick":169,"_process":29}],166:[function(require,module,exports){
 /**
  * Composes single-argument functions from right to left.
  *
@@ -19606,7 +19620,7 @@ function compose() {
 }
 
 module.exports = exports["default"];
-},{}],166:[function(require,module,exports){
+},{}],167:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -19638,7 +19652,7 @@ function isPlainObject(obj) {
 }
 
 module.exports = exports['default'];
-},{}],167:[function(require,module,exports){
+},{}],168:[function(require,module,exports){
 /**
  * Applies a function to every key-value pair inside an object.
  *
@@ -19659,7 +19673,7 @@ function mapValues(obj, fn) {
 }
 
 module.exports = exports["default"];
-},{}],168:[function(require,module,exports){
+},{}],169:[function(require,module,exports){
 /**
  * Picks key-value pairs from an object where values satisfy a predicate.
  *
@@ -19682,7 +19696,7 @@ function pick(obj, fn) {
 }
 
 module.exports = exports["default"];
-},{}],169:[function(require,module,exports){
+},{}],170:[function(require,module,exports){
 (function (global){
 /**
 * plotly.js v1.4.1

@@ -23,11 +23,17 @@
     "react-dom": "^0.14.6",
     "reactify": "^1.1.1",
     "redux": "^3.0.5",
+    "redux-thunk": "^1.0.3",
     "watchify": "^3.7.0"
   },
   "browserify": {
     "transform": [
-      ["reactify", {"es6": true}]
+      [
+        "reactify",
+        {
+          "es6": true
+        }
+      ]
     ]
   }
 }
