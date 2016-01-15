@@ -122,7 +122,7 @@ var PlotlyComponent = React.createClass({
 
 var Source = React.createClass({
     render: function(){
-      return <div id="source">* stats based on individual <a href="https://github.com/">GitHub</a> account holders</div>;
+      return <div id="source">* stats based on <a href="https://github.com/">GitHub</a> API, showing number of individual account holders per city</div>;
     }
 })
 

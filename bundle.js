@@ -123,7 +123,7 @@ var PlotlyComponent = React.createClass({displayName: "PlotlyComponent",
 
 var Source = React.createClass({displayName: "Source",
     render: function(){
-      return React.createElement("div", {id: "source"}, "* stats based on individual ", React.createElement("a", {href: "https://github.com/"}, "GitHub"), " account holders");
+      return React.createElement("div", {id: "source"}, "* stats based on ", React.createElement("a", {href: "https://github.com/"}, "GitHub"), " API, showing number of individual account holders per city");
     }
 })
 
