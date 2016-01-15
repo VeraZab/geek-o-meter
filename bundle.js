@@ -31,7 +31,7 @@ function githubResponse(city){
   }
 }
 
-function test(city){
+function start(city){
   return function(dispatch){
     dispatch(githubResponse(city));
   }
@@ -84,7 +84,7 @@ var InputField = React.createClass({displayName: "InputField",
      React.createElement("div", null, 
      React.createElement("input", {ref: function(node){this.input = node;}}), 
      React.createElement("button", {onClick: function(){
-        store.dispatch(test(this.input.value));
+        store.dispatch(start(this.input.value));
         input.value = '';
       }})
      )

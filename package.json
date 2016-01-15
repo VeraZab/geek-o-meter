@@ -4,8 +4,8 @@
   "description": "",
   "main": "ajax.js",
   "scripts": {
-    "start": "watchify index.js -o bundle.js",
-    "bundle": " browserify index.js -o bundle.js"
+    "watch": "watchify index.js -o bundle.js",
+    "start": " browserify index.js -o bundle.js"
   },
   "repository": {
     "type": "git",
