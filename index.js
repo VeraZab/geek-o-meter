@@ -5,13 +5,32 @@ var Thunk = require('redux-thunk');
 var Redux = require('redux');
 
 
-//actions
-function search(city){
+// actions
+function dataRequest(city){
+      var url = 'https://api.github.com/search/users?q=type:user+location:"' + city+'"';
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', url, false);
+      xhr.send();   
+      return JSON.parse(xhr.responseText).total_count;
+}
+
+function dataResponse(city){
   return {
-    type: 'search',
-    city: city
+    type: 'RECEIVE_INFO',
+    city: city,
+    coders: 
   }
 }
+//have to add a function that will update the city state, but then that means my state will 
+//refresh twice? once I update my city, and once I get the github response..?
+
+function start(city){
+  return function(dispatch){
+    return dataRequest(city).then().then();
+  }
+}
+
+//check how to build promise chaining
 
 //reducers
 var initialState = {
@@ -21,15 +40,18 @@ var initialState = {
 
 function reducer(state, action){
   if(state === undefined){
-    return initialState
-  } else if(action.type === 'search'){
-    var newCity = [action.city];
-    var coders = [1];
-    return {
-      val: state.val.concat(coders),
-      lab: state.lab.concat(newCity)
-    }
-  }
+      return initialState
+
+  } else if(action.type === 'RECEIVE_INFO'){
+      var newCity = ;
+      var coders = ;
+
+      return {
+        val: state.val.concat(coders),
+        lab: state.lab.concat(newCity)
+      } 
+  };
+
   return state
 }
 
@@ -59,7 +81,7 @@ var InputField = React.createClass({
      <div>
      <input ref={function(node){this.input = node;}}></input>
      <button onClick={function(){
-        store.dispatch(search(this.input.value));
+        store.dispatch(sendGiHubDataRequest(this.input.value));
         input.value = '';
       }}></button>
      </div>
