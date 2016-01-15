@@ -1,0 +1,41 @@
+#search{
+	height: 50px;
+	width: 410px;
+	margin: 80 auto;
+}
+
+#chart{
+	width:400;
+	height: 350;
+	margin: 0 auto;
+}
+
+#inputBox{
+	outline: none;
+	border: none;
+	border-bottom: 5px yellow solid;
+	width: 400px;
+	height: 38px;
+	vertical-align: middle;
+	text-align: center;
+	font-family: Helvetica;
+	font-size: 15px;
+	font-style: italic;
+}
+
+#source {
+	font-family: Helvetica;
+	font-size: 11px;
+	color: gray;
+	font-style: italic;
+	vertical-align: middle;
+	position: fixed;
+	left: 80px;
+	bottom: 30px;
+}
+
+a{
+	text-decoration: none;
+	color:purple;
+	font-style: italic;
+}

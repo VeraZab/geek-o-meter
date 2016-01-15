@@ -64,6 +64,7 @@ var Application = React.createClass({
       <div>
         <Search/>
         <PlotlyComponent store={this.props.store}/>
+        <Source/>
       </div>
     );
   }
@@ -88,7 +89,8 @@ var InputField = React.createClass({
  render: function(){
    return(
      <div>
-     <input onKeyDown={this.add}></input>
+     <input id="inputBox" onKeyDown={this.add} placeholder="enter city to compare geekiness quotient"></input>
+     <span>*</span>
      </div>
    );
  }
@@ -114,10 +116,15 @@ var PlotlyComponent = React.createClass({
     },
 
   	render: function(){  	
-		return <div />;
+		  return <div />;
   	}
 });
 
+var Source = React.createClass({
+    render: function(){
+      return <div id="source">* stats based on individual <a href="https://github.com/">GitHub</a> account holders</div>;
+    }
+})
 
 //store
 var createStoreWithMiddleware = Redux.applyMiddleware(Thunk)(Redux.createStore);

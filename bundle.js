@@ -64,7 +64,8 @@ var Application = React.createClass({displayName: "Application",
     return(
       React.createElement("div", null, 
         React.createElement(Search, null), 
-        React.createElement(PlotlyComponent, {store: this.props.store})
+        React.createElement(PlotlyComponent, {store: this.props.store}), 
+        React.createElement(Source, null)
       )
     );
   }
@@ -89,7 +90,8 @@ var InputField = React.createClass({displayName: "InputField",
  render: function(){
    return(
      React.createElement("div", null, 
-     React.createElement("input", {onKeyDown: this.add})
+     React.createElement("input", {id: "inputBox", onKeyDown: this.add, placeholder: "enter city to compare geekiness quotient"}), 
+     React.createElement("span", null, "*")
      )
    );
  }
@@ -115,10 +117,15 @@ var PlotlyComponent = React.createClass({displayName: "PlotlyComponent",
     },
 
   	render: function(){  	
-		return React.createElement("div", null);
+		  return React.createElement("div", null);
   	}
 });
 
+var Source = React.createClass({displayName: "Source",
+    render: function(){
+      return React.createElement("div", {id: "source"}, "* stats based on individual ", React.createElement("a", {href: "https://github.com/"}, "GitHub"), " account holders");
+    }
+})
 
 //store
 var createStoreWithMiddleware = Redux.applyMiddleware(Thunk)(Redux.createStore);
