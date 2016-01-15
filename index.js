@@ -7,30 +7,35 @@ var Redux = require('redux');
 
 // actions
 function dataRequest(city){
-      var url = 'https://api.github.com/search/users?q=type:user+location:"' + city+'"';
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', url, false);
-      xhr.send();   
-      return JSON.parse(xhr.responseText).total_count;
+  var url = 'https://api.github.com/search/users?q=type:user+location:"' + city+'"';
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', url, false);
+  xhr.send();   
+  return xhr.responseText;
 }
 
-function dataResponse(city){
+function parseResponse(response){
+  return JSON.parse(response).total_count;
+}
+
+function makeGithubRequest(city){
+  return parseResponse(dataRequest(city));
+};
+
+function githubResponse(city){
   return {
-    type: 'RECEIVE_INFO',
+    type: 'GITHUB_RESPONSE',
     city: city,
-    coders: 
+    users: makeGithubRequest(city)
   }
 }
-//have to add a function that will update the city state, but then that means my state will 
-//refresh twice? once I update my city, and once I get the github response..?
 
-function start(city){
+function test(city){
   return function(dispatch){
-    return dataRequest(city).then().then();
+    dispatch(githubResponse(city));
   }
 }
 
-//check how to build promise chaining
 
 //reducers
 var initialState = {
@@ -40,18 +45,15 @@ var initialState = {
 
 function reducer(state, action){
   if(state === undefined){
-      return initialState
-
-  } else if(action.type === 'RECEIVE_INFO'){
-      var newCity = ;
-      var coders = ;
-
+      return initialState;
+  } else if(action.type === 'GITHUB_RESPONSE'){
+    var newCity = [action.city];
+    var users = [action.users];
       return {
-        val: state.val.concat(coders),
-        lab: state.lab.concat(newCity)
+        lab: state.lab.concat(newCity),
+        val: state.val.concat(users)
       } 
   };
-
   return state
 }
 
@@ -81,7 +83,7 @@ var InputField = React.createClass({
      <div>
      <input ref={function(node){this.input = node;}}></input>
      <button onClick={function(){
-        store.dispatch(sendGiHubDataRequest(this.input.value));
+        store.dispatch(test(this.input.value));
         input.value = '';
       }}></button>
      </div>
