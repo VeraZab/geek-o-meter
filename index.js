@@ -78,14 +78,17 @@ var Search = React.createClass({
 });
 
 var InputField = React.createClass({
+  add: function(e){
+  if(e.keyCode == 13){
+    var city = e.target.value;
+    store.dispatch(start(city));
+    e.target.value ='';
+  }
+  },
  render: function(){
    return(
      <div>
-     <input ref={function(node){this.input = node;}}></input>
-     <button onClick={function(){
-        store.dispatch(start(this.input.value));
-        input.value = '';
-      }}></button>
+     <input onKeyDown={this.add}></input>
      </div>
    );
  }

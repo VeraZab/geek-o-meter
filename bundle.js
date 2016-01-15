@@ -79,14 +79,17 @@ var Search = React.createClass({displayName: "Search",
 });
 
 var InputField = React.createClass({displayName: "InputField",
+  add: function(e){
+  if(e.keyCode == 13){
+    var city = e.target.value;
+    store.dispatch(start(city));
+    e.target.value ='';
+  }
+  },
  render: function(){
    return(
      React.createElement("div", null, 
-     React.createElement("input", {ref: function(node){this.input = node;}}), 
-     React.createElement("button", {onClick: function(){
-        store.dispatch(start(this.input.value));
-        input.value = '';
-      }})
+     React.createElement("input", {onKeyDown: this.add})
      )
    );
  }
