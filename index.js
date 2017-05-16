@@ -1,141 +1,105 @@
-var Plotly = require('./plotly');
-var ReactDOM = require('react-dom');
-var React = require('react');
-var Thunk = require('redux-thunk');
-var Redux = require('redux');
+const Plotly = require('./plotly')
+const ReactDOM = require('react-dom')
+const React = require('react')
+const Thunk = require('redux-thunk')
+const Redux = require('redux')
 
+const compose = (f, g) => x => f(g(x))
 
 // actions
-function dataRequest(city){
-  var url = 'https://api.github.com/search/users?q=type:user+location:"' + city+'"';
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', url, false);
-  xhr.send();   
-  return xhr.responseText;
-}
+const dataRequest = xhr => city =>
+  (xhr.open(
+    'GET',
+    `https://api.github.com/search/users?q=type:user+location:"${city}"`,
+    false
+  ), xhr.send(), [city, xhr.responseText])
 
-function parseResponse(response){
-  return JSON.parse(response).total_count;
-}
+const parseResponse = compose(
+  ([city, json]) => [city, json.total_count],
+  ([city, raw]) => [city, JSON.parse(raw)]
+)
 
-function makeGithubRequest(city){
-  return parseResponse(dataRequest(city));
-};
+const makeGithubRequest = compose(parseResponse, dataRequest(new XMLHttpRequest()))
 
-function githubResponse(city){
-  return {
-    type: 'GITHUB_RESPONSE',
-    city: city,
-    users: makeGithubRequest(city)
-  }
-}
+const createModel = ([city, users]) => ({
+  type: 'GITHUB_RESPONSE',
+  city,
+  users
+})
 
-function start(city){
-  return function(dispatch){
-    dispatch(githubResponse(city));
-  }
-}
+const githubResponse = compose(createModel, makeGithubRequest)
 
+const start = city => dispatch => dispatch(githubResponse(city))
 
 //reducers
-var initialState = {
-  val:[],
-  lab:[],
+const initialState = {
+  val: [],
+  lab: []
 }
 
-function reducer(state, action){
-  if(state === undefined){
-      return initialState;
-  } else if(action.type === 'GITHUB_RESPONSE'){
-    var newCity = [action.city];
-    var users = [action.users];
-      return {
-        lab: state.lab.concat(newCity),
-        val: state.val.concat(users)
-      } 
-  };
-  return state
-}
+const reducer = (state, action) =>
+  action.type === 'GITHUB_RESPONSE'
+    ? {
+        lab: state.lab.concat([action.city]),
+        val: state.val.concat([action.users])
+      }
+    : state || initialState
 
 //components
-var Application = React.createClass({
-  render: function(){
-    return(
-      <div>
-        <Search/>
-        <PlotlyComponent store={this.props.store}/>
-        <Source/>
-      </div>
-    );
-  }
+const PlotlyComponent = React.createClass({
+  shouldComponentUpdate: props =>
+    Plotly.newPlot(
+      'chart',
+      [
+        {
+          values: props.store.val,
+          labels: props.store.lab,
+          type: 'pie'
+        }],
+      {
+        height: 400,
+        width: 400
+      }),
+
+  render: () => <div />
 })
 
-var Search = React.createClass({
- render: function(){
-   return(
-       <InputField/>
-   );
- }
-});
+const Application = props => (
+  <div>
+    <Search />
+    <PlotlyComponent store={props.store} />
+    <Source />
+  </div>
+)
 
-var InputField = React.createClass({
-  add: function(e){
-  if(e.keyCode == 13){
-    var city = e.target.value;
-    store.dispatch(start(city));
-    e.target.value ='';
-  }
-  },
- render: function(){
-   return(
-     <div>
-     <input id="inputBox" onKeyDown={this.add} placeholder="enter city to compare geekiness quotient"></input>
-     <span>*</span>
-     </div>
-   );
- }
-});
+const Search = () => <InputField />
 
-var PlotlyComponent = React.createClass({
-    shouldComponentUpdate: function() {
-      return true;
-    },
+const add = e => e.keyCode === 13 && (store.dispatch(start(e.target.value)), (e.target.value = ''))
 
-    componentDidUpdate: function() {
-      var data = [{
-      values: this.props.store.val, 
-      labels: this.props.store.lab,
-      type: 'pie'}];
+const InputField = () => (
+  <div>
+    <input id="inputBox" onKeyDown={add} placeholder="enter city to compare geekiness quotient" />
+    <span>*</span>
+  </div>
+)
 
-      var layout = {
-      height: 400,
-      width: 400
-      };
-
-      Plotly.newPlot('chart', data, layout);  
-    },
-
-  	render: function(){  	
-		  return <div />;
-  	}
-});
-
-var Source = React.createClass({
-    render: function(){
-      return <div id="source">* stats based on <a href="https://github.com/">GitHub</a> API, showing number of individual account holders per city</div>;
-    }
-})
+const Source = () => (
+  <div id="source">
+    * stats based on
+    {' '}
+    <a href="https://github.com/">GitHub</a>
+    {' '}
+    API, showing number of individual account holders per city
+  </div>
+)
 
 //store
-var createStoreWithMiddleware = Redux.applyMiddleware(Thunk)(Redux.createStore);
-var store = createStoreWithMiddleware(reducer);
+const createStoreWithMiddleware = Redux.applyMiddleware(Thunk)(Redux.createStore)
+const store = createStoreWithMiddleware(reducer)
 
-var render = function(){
-  ReactDOM.render(
-  <Application store = {store.getState()}/>,
-  document.getElementById('search')
-  );
-}
-store.subscribe(render);
-render();
+const render = () =>
+  ReactDOM.render(<Application store={store.getState()} />, document.getElementById('search'))
 
+store.subscribe(render)
+
+render()
